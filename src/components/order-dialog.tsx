@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Loader2, Minus, Plus } from "lucide-react";
 import { formatPrice, type MenuItem } from "@/data/menu";
 import type { PersonMenu } from "@/data/people";
+import { asset } from "@/lib/asset";
+import { placeOrder } from "@/lib/orders-client";
 import { defaultReadyAt, formatReadyLabel } from "@/lib/time";
 import { Button } from "@/components/ui/button";
 import {
@@ -68,30 +70,18 @@ function OrderForm({
     setError("");
 
     try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kind,
-          personId: person.id,
-          itemId: item.id,
-          quantity,
-          name,
-          desk,
-          readyBy: isHeat ? readyAt.toISOString() : undefined,
-          readyByLabel: isHeat ? formatReadyLabel(readyAt) : undefined,
-        }),
+      const order = await placeOrder({
+        kind,
+        personId: person.id,
+        itemId: item.id,
+        quantity,
+        name,
+        desk,
+        readyBy: isHeat ? readyAt.toISOString() : undefined,
+        readyByLabel: isHeat ? formatReadyLabel(readyAt) : undefined,
       });
-      const payload = (await response.json()) as {
-        order?: { id: string };
-        error?: string;
-      };
 
-      if (!response.ok || !payload.order) {
-        throw new Error(payload.error ?? "Could not send that.");
-      }
-
-      router.push(`/order/${payload.order.id}`);
+      router.push(`/order?id=${order.id}`);
     } catch (submitError) {
       setError(
         submitError instanceof Error
@@ -118,7 +108,7 @@ function OrderForm({
       <div className="flex gap-3 rounded-xl bg-muted/60 p-2">
         <div className="relative size-20 shrink-0 overflow-hidden rounded-lg">
           <Image
-            src={item.image}
+            src={asset(item.image)}
             alt={item.name}
             fill
             className="object-cover"

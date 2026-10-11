@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { OrderDialog } from "@/components/order-dialog";
+import { asset } from "@/lib/asset";
 
 function tagLabel(tag: MenuTag) {
   if (tag === "veg") return "Veg";
@@ -98,7 +99,7 @@ function MenuSection({
             <Card key={item.id} className="pt-0">
               <div className="relative aspect-[4/3] bg-muted">
                 <Image
-                  src={item.image}
+                  src={asset(item.image)}
                   alt={item.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

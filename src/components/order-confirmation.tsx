@@ -1,46 +1,81 @@
-import { Suspense } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Clock, MapPin, Microwave } from "lucide-react";
 import { formatPrice } from "@/data/menu";
-import { getOrder } from "@/lib/orders-store";
+import { asset } from "@/lib/asset";
+import { getLocalOrder, hasRemoteOrders, listOrders } from "@/lib/orders-client";
+import type { Order } from "@/lib/types";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default async function OrderConfirmationPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+type LookupState =
+  | { status: "loading" }
+  | { status: "missing" }
+  | { status: "found"; order: Order };
 
-  return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-full flex-col">
-          <SiteHeader />
-          <main className="mx-auto flex w-full max-w-lg flex-1 items-center justify-center px-4 text-muted-foreground">
-            Loading order…
-          </main>
-        </div>
+export function OrderConfirmation() {
+  const id = useSearchParams().get("id") ?? "";
+  const [state, setState] = useState<LookupState>({ status: "loading" });
+
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      let order = getLocalOrder(id);
+      if (!order && hasRemoteOrders) {
+        try {
+          order = (await listOrders()).find((entry) => entry.id === id) ?? null;
+        } catch {
+          order = null;
+        }
       }
-    >
-      <OrderConfirmation id={id} />
-    </Suspense>
-  );
-}
+      if (!cancelled) {
+        setState(order ? { status: "found", order } : { status: "missing" });
+      }
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [id]);
 
-async function OrderConfirmation({ id }: { id: string }) {
-  const order = await getOrder(id);
-
-  if (!order) {
-    notFound();
+  if (state.status === "loading") {
+    return (
+      <div className="flex min-h-full flex-col">
+        <SiteHeader />
+        <main className="mx-auto flex w-full max-w-lg flex-1 items-center justify-center px-4 text-muted-foreground">
+          Loading order…
+        </main>
+      </div>
+    );
   }
 
+  if (state.status === "missing") {
+    return (
+      <div className="flex min-h-full flex-col">
+        <SiteHeader />
+        <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-4 px-4 py-12 text-center">
+          <h1 className="font-heading text-3xl tracking-tight">
+            We can’t find that order
+          </h1>
+          <p className="text-muted-foreground">
+            It may have been placed on another device. Ask whoever runs the
+            microwave, or order again.
+          </p>
+          <Button nativeButton={false} render={<Link href="/" />}>
+            Back to Mätti
+          </Button>
+        </main>
+      </div>
+    );
+  }
+
+  const { order } = state;
   const isHeat = order.kind === "heat";
-  const menuHref = `/${order.personId}`;
 
   return (
     <div className="flex min-h-full flex-col">
@@ -66,7 +101,7 @@ async function OrderConfirmation({ id }: { id: string }) {
         <Card className="mt-8 pt-0">
           <div className="relative aspect-[16/9] bg-muted">
             <Image
-              src={order.itemImage}
+              src={asset(order.itemImage)}
               alt={order.itemName}
               fill
               className="object-cover"
@@ -110,7 +145,7 @@ async function OrderConfirmation({ id }: { id: string }) {
           <Button
             className="flex-1"
             nativeButton={false}
-            render={<Link href={menuHref} />}
+            render={<Link href={`/${order.personId}`} />}
           >
             Back to the menu
           </Button>

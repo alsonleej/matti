@@ -5,6 +5,12 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
 import { PEOPLE } from "@/data/people";
+import { asset } from "@/lib/asset";
+import {
+  hasRemoteOrders,
+  listOrders,
+  updateOrderStatus,
+} from "@/lib/orders-client";
 import { formatReadyBy } from "@/lib/time";
 import type { Order, OrderStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -41,8 +47,9 @@ function nextLabel(status: Order["status"]) {
   return null;
 }
 
-export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+export function KitchenBoard() {
+  const [loaded, setLoaded] = useState<Order[] | null>(null);
+  const orders = useMemo(() => loaded ?? [], [loaded]);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<(typeof STATUS_FILTERS)[number]["id"]>(
     "all",
@@ -51,15 +58,7 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
 
   const load = useCallback(async () => {
     try {
-      const response = await fetch("/api/orders", { cache: "no-store" });
-      const payload = (await response.json()) as {
-        orders?: Order[];
-        error?: string;
-      };
-      if (!response.ok) {
-        throw new Error(payload.error ?? "Could not load orders.");
-      }
-      setOrders(payload.orders ?? []);
+      setLoaded(await listOrders());
       setError("");
     } catch (loadError) {
       setError(
@@ -69,10 +68,12 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      void load();
-    }, 8000);
-    return () => window.clearInterval(timer);
+    const first = window.setTimeout(() => void load(), 0);
+    const timer = window.setInterval(() => void load(), 8000);
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(timer);
+    };
   }, [load]);
 
   const heatOrders = useMemo(
@@ -123,20 +124,9 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
 
     setUpdatingId(order.id);
     try {
-      const response = await fetch(`/api/orders/${order.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
-      const payload = (await response.json()) as {
-        order?: Order;
-        error?: string;
-      };
-      if (!response.ok || !payload.order) {
-        throw new Error(payload.error ?? "Could not update that order.");
-      }
-      setOrders((current) =>
-        current.map((entry) => (entry.id === order.id ? payload.order! : entry)),
+      const updated = await updateOrderStatus(order, status);
+      setLoaded((current) =>
+        (current ?? []).map((entry) => (entry.id === order.id ? updated : entry)),
       );
       toast.success(`${order.itemName} → ${STATUS_LABEL[status]}`);
     } catch (updateError) {
@@ -161,6 +151,12 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
           Microwave today’s orders for the ready-by time. Stock requests below
           are demand for trays we don’t have in yet.
         </p>
+        {!hasRemoteOrders ? (
+          <p className="mt-3 max-w-2xl rounded-xl border border-dashed bg-card px-4 py-3 text-sm text-muted-foreground">
+            Orders are saved in this browser only. Connect a shared Google
+            Sheet (see README) to collect orders from everyone.
+          </p>
+        ) : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -196,6 +192,10 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
           <Button className="mt-4" onClick={() => void load()}>
             Try again
           </Button>
+        </div>
+      ) : loaded === null ? (
+        <div className="rounded-2xl border bg-card px-6 py-16 text-center text-muted-foreground">
+          Loading the board…
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
@@ -283,7 +283,7 @@ function OrderRow({
       <CardHeader className="sm:flex-row sm:items-center sm:gap-4">
         <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
           <Image
-            src={order.itemImage}
+            src={asset(order.itemImage)}
             alt={order.itemName}
             fill
             className="object-cover"
