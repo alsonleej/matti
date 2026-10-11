@@ -27,6 +27,7 @@ export default function Home() {
                 <Button
                   className="h-auto w-full flex-col items-start gap-1 px-4 py-4 text-left"
                   variant="outline"
+                  nativeButton={false}
                   render={<Link href={`/${id}`} />}
                 >
                   <span className="font-heading text-lg">{person.name}</span>

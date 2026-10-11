@@ -69,7 +69,7 @@ function MenuSection({
   kicker,
   title,
   empty,
-  items,
+  items = [],
   action,
   onSelect,
 }: {
@@ -77,7 +77,7 @@ function MenuSection({
   kicker: string;
   title: string;
   empty: string;
-  items: MenuItem[];
+  items?: MenuItem[];
   action: string;
   onSelect: (item: MenuItem) => void;
 }) {

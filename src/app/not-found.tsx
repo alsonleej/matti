@@ -14,7 +14,7 @@ export default function NotFound() {
           The order or page you asked for isn’t here. Head back to the board
           and pick something else.
         </p>
-        <Button className="mt-6" render={<Link href="/" />}>
+        <Button className="mt-6" nativeButton={false} render={<Link href="/" />}>
           Back to the menu
         </Button>
       </main>

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -14,6 +15,24 @@ export default async function OrderConfirmationPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-full flex-col">
+          <SiteHeader />
+          <main className="mx-auto flex w-full max-w-lg flex-1 items-center justify-center px-4 text-muted-foreground">
+            Loading order…
+          </main>
+        </div>
+      }
+    >
+      <OrderConfirmation id={id} />
+    </Suspense>
+  );
+}
+
+async function OrderConfirmation({ id }: { id: string }) {
   const order = await getOrder(id);
 
   if (!order) {
@@ -79,19 +98,26 @@ export default async function OrderConfirmationPage({
               </li>
               <li className="flex items-center gap-2">
                 <Microwave className="size-4 text-primary" />
-                {isHeat ? "Pay with Swish at pickup" : "No charge until we stock it"}
+                {isHeat
+                  ? "Pay with Swish at pickup"
+                  : "No charge until we stock it"}
               </li>
             </ul>
           </CardContent>
         </Card>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button className="flex-1" render={<Link href={menuHref} />}>
+          <Button
+            className="flex-1"
+            nativeButton={false}
+            render={<Link href={menuHref} />}
+          >
             Back to the menu
           </Button>
           <Button
             className="flex-1"
             variant="outline"
+            nativeButton={false}
             render={<Link href="/kitchen" />}
           >
             View kitchen board
