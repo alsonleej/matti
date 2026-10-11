@@ -153,6 +153,16 @@ export const MENU: MenuItem[] = [
     heatMinutes: 5,
     tags: [],
   },
+  {
+    id: "red-curry-chicken",
+    name: "Red Curry Chicken",
+    description:
+      "Creamy red curry with tender chicken, bamboo shoots, and Thai basil. Rich and aromatic.",
+    priceKr: PRICE_KR,
+    image: "/foods/butter-chicken.jpg",
+    heatMinutes: 5,
+    tags: ["spicy"],
+  },
 ];
 
 export function getMenuItem(id: string) {
