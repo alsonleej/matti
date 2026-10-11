@@ -13,10 +13,10 @@ Open [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
 Personal menus (send these individually):
 
-- [/alson](http://127.0.0.1:43127/alson)
-- [/harshita](http://127.0.0.1:43127/harshita)
-- [/joel](http://127.0.0.1:43127/joel)
-- [/yixuan](http://127.0.0.1:43127/yixuan)
+- [/kisi](http://127.0.0.1:43127/kisi)
+- [/standab](http://127.0.0.1:43127/standab)
+- [/bmb](http://127.0.0.1:43127/bmb)
+- [/chinsay](http://127.0.0.1:43127/chinsay)
 
 Kitchen board: [/kitchen](http://127.0.0.1:43127/kitchen)
 

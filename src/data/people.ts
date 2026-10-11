@@ -1,6 +1,6 @@
 import { getMenuItem, type MenuItem } from "@/data/menu";
 
-export const PERSON_IDS = ["alson", "harshita", "joel", "yixuan"] as const;
+export const PERSON_IDS = ["kisi", "standab", "bmb", "chinsay"] as const;
 
 export type PersonId = (typeof PERSON_IDS)[number];
 
@@ -12,27 +12,27 @@ export type PersonMenu = {
 };
 
 export const PEOPLE: Record<PersonId, PersonMenu> = {
-  alson: {
-    id: "alson",
-    name: "Alson",
+  kisi: {
+    id: "kisi",
+    name: "Kisi",
     availableIds: ["lasagne", "meatballs", "bolognese", "pizza"],
     requestIds: ["salmon", "tikka", "chicken-wok", "samosas"],
   },
-  harshita: {
-    id: "harshita",
-    name: "Harshita",
+  standab: {
+    id: "standab",
+    name: "Standab",
     availableIds: ["tikka", "samosas", "curry", "veg-pasta"],
     requestIds: ["salmon", "pancakes", "bolognese", "fried-rice"],
   },
-  joel: {
-    id: "joel",
-    name: "Joel",
+  bmb: {
+    id: "bmb",
+    name: "BMB",
     availableIds: ["fried-rice", "meatballs", "pizza", "beef-pasta"],
     requestIds: ["lasagne", "curry", "pancakes", "pork-noodles"],
   },
-  yixuan: {
-    id: "yixuan",
-    name: "Yixuan",
+  chinsay: {
+    id: "chinsay",
+    name: "Chinsay",
     availableIds: ["salmon", "chicken-wok", "bolognese", "fried-rice"],
     requestIds: ["meatballs", "lasagne", "samosas", "tikka"],
   },

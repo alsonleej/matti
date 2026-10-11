@@ -201,7 +201,7 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
         <div className="rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
           <p className="font-heading text-lg">No heat orders yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Send /alson, /harshita, /joel, or /yixuan. Incoming orders show up
+            Send /kisi, /standab, /bmb, or /chinsay. Incoming orders show up
             grouped by ready-by time.
           </p>
         </div>
