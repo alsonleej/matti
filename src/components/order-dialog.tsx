@@ -111,7 +111,7 @@ function OrderForm({
         <DialogDescription>
           {isHeat
             ? `We’ll microwave this by hand and have it ready at your time. Pay ${formatPrice(totalKr)} at pickup.`
-            : `Not in today’s cabinet. Requesting it tells us to stock this ICA / Convini tray next.`}
+            : `Not in today’s cabinet. Requesting it tells us to stock this tray next.`}
         </DialogDescription>
       </DialogHeader>
 

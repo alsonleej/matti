@@ -1,5 +1,7 @@
 export type MenuTag = "veg" | "spicy";
 
+export const PRICE_KR = 55;
+
 export type MenuItem = {
   id: string;
   name: string;
@@ -15,8 +17,8 @@ export const MENU: MenuItem[] = [
     id: "lasagne",
     name: "Lasagne",
     description:
-      "ICA frozen lasagne. Beef ragu, pasta sheets, and béchamel — plated hot after the microwave.",
-    priceKr: 55,
+      "Beef ragu, pasta sheets, and béchamel. Heated through and plated hot.",
+    priceKr: PRICE_KR,
     image: "/foods/lasagne.jpg",
     heatMinutes: 5,
     tags: [],
@@ -25,8 +27,8 @@ export const MENU: MenuItem[] = [
     id: "meatballs",
     name: "Köttbullar",
     description:
-      "ICA köttbullar. Swedish meatballs from the freezer, heated through and served fresh.",
-    priceKr: 49,
+      "Swedish meatballs from the freezer, heated through and served fresh.",
+    priceKr: PRICE_KR,
     image: "/foods/meatballs.jpg",
     heatMinutes: 4,
     tags: [],
@@ -35,8 +37,8 @@ export const MENU: MenuItem[] = [
     id: "salmon",
     name: "Lax i dillsås",
     description:
-      "ICA salmon tray with dill sauce. Frozen at the store, looks like dinner once it’s heated.",
-    priceKr: 60,
+      "Salmon with dill sauce. Frozen until we heat it; looks like dinner on the plate.",
+    priceKr: PRICE_KR,
     image: "/foods/salmon.jpg",
     heatMinutes: 5,
     tags: [],
@@ -45,8 +47,8 @@ export const MENU: MenuItem[] = [
     id: "tikka",
     name: "Kyckling tikka masala",
     description:
-      "Convini / ICA chicken tikka. Creamy tomato-curry from a frozen tray, with rice on the side.",
-    priceKr: 59,
+      "Creamy tomato-curry chicken from a frozen tray, with rice on the side.",
+    priceKr: PRICE_KR,
     image: "/foods/butter-chicken.jpg",
     heatMinutes: 5,
     tags: ["spicy"],
@@ -55,8 +57,8 @@ export const MENU: MenuItem[] = [
     id: "bolognese",
     name: "Pasta bolognese",
     description:
-      "ICA pasta bolognese. A freezer classic — spaghetti and meat sauce, ready in a few minutes.",
-    priceKr: 48,
+      "Spaghetti and meat sauce. A freezer classic, ready in a few minutes.",
+    priceKr: PRICE_KR,
     image: "/foods/carbonara.jpg",
     heatMinutes: 4,
     tags: [],
@@ -65,8 +67,8 @@ export const MENU: MenuItem[] = [
     id: "pizza",
     name: "Pan pizza",
     description:
-      "The ICA / Billys-style pan pizza. Frozen disc, molten cheese after a short heat.",
-    priceKr: 46,
+      "Frozen pan pizza. Short heat, molten cheese.",
+    priceKr: PRICE_KR,
     image: "/foods/pizza.jpg",
     heatMinutes: 3,
     tags: [],
@@ -75,8 +77,8 @@ export const MENU: MenuItem[] = [
     id: "pancakes",
     name: "Pannkakor",
     description:
-      "ICA frozen pannkakor. Swedish pancakes from the freezer aisle, served stacked and hot.",
-    priceKr: 45,
+      "Swedish pancakes from the freezer, served stacked and hot.",
+    priceKr: PRICE_KR,
     image: "/foods/pancakes.jpg",
     heatMinutes: 2,
     tags: ["veg"],
@@ -85,8 +87,8 @@ export const MENU: MenuItem[] = [
     id: "chicken-wok",
     name: "Kycklingwok",
     description:
-      "ICA chicken wok with peppers. A Convini cabinet regular, reheated until the sauce shines.",
-    priceKr: 57,
+      "Chicken wok with peppers. Reheated until the sauce shines.",
+    priceKr: PRICE_KR,
     image: "/foods/stroganoff.jpg",
     heatMinutes: 4,
     tags: [],
@@ -95,8 +97,8 @@ export const MENU: MenuItem[] = [
     id: "curry",
     name: "Röd curry",
     description:
-      "ICA red curry with chicken. Thai-style frozen tray — spicy, coconut, office-lunch staple.",
-    priceKr: 55,
+      "Thai-style red curry with chicken — spicy, coconut, office-lunch staple.",
+    priceKr: PRICE_KR,
     image: "/foods/chili.jpg",
     heatMinutes: 4,
     tags: ["spicy"],
@@ -105,8 +107,8 @@ export const MENU: MenuItem[] = [
     id: "fried-rice",
     name: "Stekt ris",
     description:
-      "ICA fried rice with chicken and vegetables. Straight from the freezer, fluffed in the microwave.",
-    priceKr: 50,
+      "Fried rice with chicken and vegetables, fluffed in the microwave.",
+    priceKr: PRICE_KR,
     image: "/foods/rice-bowl.jpg",
     heatMinutes: 4,
     tags: [],
@@ -115,8 +117,8 @@ export const MENU: MenuItem[] = [
     id: "pork-noodles",
     name: "Nudlar med fläsk",
     description:
-      "Convini-style pork noodles. Frozen Asian tray that plates like a fresh bowl once heated.",
-    priceKr: 56,
+      "Pork noodles. Frozen tray that plates like a fresh bowl once heated.",
+    priceKr: PRICE_KR,
     image: "/foods/noodles.jpg",
     heatMinutes: 4,
     tags: [],
@@ -125,8 +127,8 @@ export const MENU: MenuItem[] = [
     id: "veg-pasta",
     name: "Vegetarisk pasta",
     description:
-      "ICA vegetarian pasta in tomato sauce. No meat, still a proper microwave lunch.",
-    priceKr: 47,
+      "Vegetarian pasta in tomato sauce. No meat, still a proper microwave lunch.",
+    priceKr: PRICE_KR,
     image: "/foods/veg-lasagne.jpg",
     heatMinutes: 4,
     tags: ["veg"],
@@ -135,8 +137,8 @@ export const MENU: MenuItem[] = [
     id: "samosas",
     name: "Samosas",
     description:
-      "ICA frozen vegetable samosas. Crisp after heating — the snack tray from the freezer aisle.",
-    priceKr: 45,
+      "Vegetable samosas. Crisp after heating — the snack tray from the freezer.",
+    priceKr: PRICE_KR,
     image: "/foods/falafel.jpg",
     heatMinutes: 3,
     tags: ["veg", "spicy"],
@@ -145,8 +147,8 @@ export const MENU: MenuItem[] = [
     id: "beef-pasta",
     name: "Pasta med biff",
     description:
-      "ICA creamy beef pasta. Frozen tagliatelle with steak pieces, served looking freshly tossed.",
-    priceKr: 58,
+      "Creamy beef pasta. Tagliatelle with steak pieces, served looking freshly tossed.",
+    priceKr: PRICE_KR,
     image: "/foods/pasta2.jpg",
     heatMinutes: 5,
     tags: [],

@@ -59,7 +59,7 @@ async function OrderConfirmation({ id }: { id: string }) {
         </h1>
         <p className="mt-3 text-muted-foreground">
           {isHeat
-            ? `${order.name}, this is a Mätti trial order. Someone will microwave the ICA / Convini tray by hand.`
+            ? `${order.name}, this is a Mätti trial order. Someone will microwave the tray by hand.`
             : `${order.name}, this tray isn’t in today. If enough people request it, we’ll stock it.`}
         </p>
 

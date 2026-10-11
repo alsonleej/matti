@@ -1,6 +1,6 @@
 # Mätti
 
-Office interest check for a heat-up vending machine. Colleagues order ICA / Convini frozen meals (45–60 kr) from a personal menu. We microwave what’s available today, and they can request trays to stock next.
+Office interest check for a heat-up vending machine. Colleagues order frozen meals (55 kr) from a personal menu. We microwave what’s available today, and they can request trays to stock next.
 
 ## Run it
 

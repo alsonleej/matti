@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PRICE_KR, formatPrice } from "@/data/menu";
 import { PERSON_IDS, PEOPLE } from "@/data/people";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
@@ -14,10 +15,13 @@ export default function Home() {
         <h1 className="font-heading mt-4 text-4xl leading-tight tracking-tight sm:text-5xl">
           Mätti
         </h1>
+        <p className="font-heading mt-3 text-5xl tracking-tight">
+          {formatPrice(PRICE_KR)}
+        </p>
         <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-          ICA and Convini frozen trays, heated by hand. Open your link, order
-          what’s in today, or request what we should stock next. 45–60 kr, pay
-          at pickup.
+          Frozen trays, heated by hand. Open your link, order what’s in today,
+          or request what we should stock next. Everything is{" "}
+          {formatPrice(PRICE_KR)} — pay at pickup.
         </p>
         <ul className="mt-8 grid gap-3 sm:grid-cols-2">
           {PERSON_IDS.map((id) => {

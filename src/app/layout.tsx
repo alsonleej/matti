@@ -16,7 +16,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Mätti — office microwave orders",
   description:
-    "Order ICA and Convini frozen meals for a ready-by time. We heat them by hand to see if a vending machine is worth buying.",
+    "Order microwave meals for a ready-by time. Everything is 55 kr. We heat them by hand to see if a vending machine is worth buying.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

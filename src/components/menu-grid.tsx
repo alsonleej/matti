@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Clock } from "lucide-react";
-import { formatPrice, type MenuItem, type MenuTag } from "@/data/menu";
+import { type MenuItem, type MenuTag } from "@/data/menu";
 import type { PersonMenu } from "@/data/people";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -117,12 +117,7 @@ function MenuSection({
                 </div>
               </div>
               <CardHeader>
-                <div className="flex items-start justify-between gap-3">
-                  <CardTitle>{item.name}</CardTitle>
-                  <p className="font-heading shrink-0 text-lg">
-                    {formatPrice(item.priceKr)}
-                  </p>
-                </div>
+                <CardTitle>{item.name}</CardTitle>
                 <CardDescription>{item.description}</CardDescription>
               </CardHeader>
               <CardContent>
