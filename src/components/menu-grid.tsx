@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Clock } from "lucide-react";
 import { formatPrice, type MenuItem, type MenuTag } from "@/data/menu";
+import type { PersonMenu } from "@/data/people";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,68 +16,85 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { OrderDialog } from "@/components/order-dialog";
-import { cn } from "@/lib/utils";
-
-const FILTERS: { id: "all" | MenuTag; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "value", label: "Under $5" },
-  { id: "veg", label: "Vegetarian" },
-  { id: "spicy", label: "Spicy" },
-];
 
 function tagLabel(tag: MenuTag) {
   if (tag === "veg") return "Veg";
-  if (tag === "spicy") return "Spicy";
-  return "Under $5";
+  return "Spicy";
 }
 
-export function MenuGrid({ items }: { items: MenuItem[] }) {
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
-  const [selected, setSelected] = useState<MenuItem | null>(null);
+type MenuGridProps = {
+  person: PersonMenu;
+  available: MenuItem[];
+  request: MenuItem[];
+};
 
-  const visible = useMemo(() => {
-    if (filter === "all") return items;
-    return items.filter((item) => item.tags.includes(filter));
-  }, [filter, items]);
+export function MenuGrid({ person, available, request }: MenuGridProps) {
+  const [selected, setSelected] = useState<{
+    item: MenuItem;
+    kind: "heat" | "stock";
+  } | null>(null);
 
   return (
-    <section id="menu" className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-primary">Today’s microwave menu</p>
-          <h2 className="font-heading mt-1 text-3xl tracking-tight sm:text-4xl">
-            Pick a meal, pick a time
-          </h2>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => setFilter(option.id)}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-sm transition-colors",
-                filter === option.id
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:bg-muted",
-              )}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-14 px-4 py-10 sm:px-6 sm:py-14">
+      <MenuSection
+        id="available"
+        kicker="Available today"
+        title="In the cabinet — we’ll heat it"
+        empty="Nothing on today’s shelf for this menu."
+        items={available}
+        action="Order"
+        onSelect={(item) => setSelected({ item, kind: "heat" })}
+      />
+      <MenuSection
+        id="request"
+        kicker="Request to stock"
+        title="Not in today. Want it next?"
+        empty="No extra trays on the request list."
+        items={request}
+        action="Request to stock"
+        onSelect={(item) => setSelected({ item, kind: "stock" })}
+      />
+      <OrderDialog
+        item={selected?.item ?? null}
+        kind={selected?.kind ?? "heat"}
+        person={person}
+        onClose={() => setSelected(null)}
+      />
+    </div>
+  );
+}
 
-      {visible.length === 0 ? (
-        <div className="mt-10 rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
-          <p className="font-heading text-lg">Nothing in that filter</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Try All, or another tag.
-          </p>
+function MenuSection({
+  id,
+  kicker,
+  title,
+  empty,
+  items,
+  action,
+  onSelect,
+}: {
+  id: string;
+  kicker: string;
+  title: string;
+  empty: string;
+  items: MenuItem[];
+  action: string;
+  onSelect: (item: MenuItem) => void;
+}) {
+  return (
+    <section id={id}>
+      <p className="text-sm font-medium text-primary">{kicker}</p>
+      <h2 className="font-heading mt-1 text-3xl tracking-tight sm:text-4xl">
+        {title}
+      </h2>
+
+      {items.length === 0 ? (
+        <div className="mt-8 rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
+          <p className="font-heading text-lg">{empty}</p>
         </div>
       ) : (
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((item) => (
+          {items.map((item) => (
             <Card key={item.id} className="pt-0">
               <div className="relative aspect-[4/3] bg-muted">
                 <Image
@@ -101,7 +119,9 @@ export function MenuGrid({ items }: { items: MenuItem[] }) {
               <CardHeader>
                 <div className="flex items-start justify-between gap-3">
                   <CardTitle>{item.name}</CardTitle>
-                  <p className="font-heading text-lg">{formatPrice(item.priceCents)}</p>
+                  <p className="font-heading shrink-0 text-lg">
+                    {formatPrice(item.priceKr)}
+                  </p>
                 </div>
                 <CardDescription>{item.description}</CardDescription>
               </CardHeader>
@@ -112,16 +132,14 @@ export function MenuGrid({ items }: { items: MenuItem[] }) {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" onClick={() => setSelected(item)}>
-                  Order for a time
+                <Button className="w-full" onClick={() => onSelect(item)}>
+                  {action}
                 </Button>
               </CardFooter>
             </Card>
           ))}
         </div>
       )}
-
-      <OrderDialog item={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }

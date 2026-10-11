@@ -1,10 +1,10 @@
-export type MenuTag = "veg" | "spicy" | "value";
+export type MenuTag = "veg" | "spicy";
 
 export type MenuItem = {
   id: string;
   name: string;
   description: string;
-  priceCents: number;
+  priceKr: number;
   image: string;
   heatMinutes: number;
   tags: MenuTag[];
@@ -12,103 +12,143 @@ export type MenuItem = {
 
 export const MENU: MenuItem[] = [
   {
-    id: "ramen",
-    name: "Spicy miso ramen",
+    id: "lasagne",
+    name: "Lasagne",
     description:
-      "Wheat noodles in a chili-miso broth with corn and nori. Hits like a vending-machine classic.",
-    priceCents: 450,
-    image: "/foods/ramen.jpg",
-    heatMinutes: 4,
-    tags: ["spicy", "value"],
+      "ICA frozen lasagne. Beef ragu, pasta sheets, and béchamel — plated hot after the microwave.",
+    priceKr: 55,
+    image: "/foods/lasagne.jpg",
+    heatMinutes: 5,
+    tags: [],
   },
   {
-    id: "mac",
-    name: "Classic mac & cheese",
+    id: "meatballs",
+    name: "Köttbullar",
     description:
-      "Elbow pasta in a thick cheddar sauce. Three minutes in the microwave, zero decisions.",
-    priceCents: 350,
-    image: "/foods/mac.jpg",
-    heatMinutes: 3,
-    tags: ["veg", "value"],
-  },
-  {
-    id: "dumplings",
-    name: "Pork dumplings",
-    description:
-      "Eight pan-style dumplings with soy-ginger dip. Steams through in the microwave.",
-    priceCents: 500,
-    image: "/foods/dumplings.jpg",
+      "ICA köttbullar. Swedish meatballs from the freezer, heated through and served fresh.",
+    priceKr: 49,
+    image: "/foods/meatballs.jpg",
     heatMinutes: 4,
     tags: [],
   },
   {
-    id: "burrito",
-    name: "Breakfast burrito",
+    id: "salmon",
+    name: "Lax i dillsås",
     description:
-      "Eggs, potato, cheddar, and salsa in a flour tortilla. Built for a 12:00 pickup.",
-    priceCents: 550,
-    image: "/foods/burrito.jpg",
-    heatMinutes: 2,
+      "ICA salmon tray with dill sauce. Frozen at the store, looks like dinner once it’s heated.",
+    priceKr: 60,
+    image: "/foods/salmon.jpg",
+    heatMinutes: 5,
     tags: [],
   },
   {
-    id: "soup",
-    name: "Tomato basil soup",
+    id: "tikka",
+    name: "Kyckling tikka masala",
     description:
-      "Cup of roasted tomato soup with basil. Light, hot, and ready between meetings.",
-    priceCents: 300,
-    image: "/foods/soup.jpg",
-    heatMinutes: 3,
-    tags: ["veg", "value"],
+      "Convini / ICA chicken tikka. Creamy tomato-curry from a frozen tray, with rice on the side.",
+    priceKr: 59,
+    image: "/foods/butter-chicken.jpg",
+    heatMinutes: 5,
+    tags: ["spicy"],
+  },
+  {
+    id: "bolognese",
+    name: "Pasta bolognese",
+    description:
+      "ICA pasta bolognese. A freezer classic — spaghetti and meat sauce, ready in a few minutes.",
+    priceKr: 48,
+    image: "/foods/carbonara.jpg",
+    heatMinutes: 4,
+    tags: [],
   },
   {
     id: "pizza",
-    name: "Pepperoni pizza slice",
+    name: "Pan pizza",
     description:
-      "A thick New York-style slice. We heat it until the cheese bubbles again.",
-    priceCents: 400,
+      "The ICA / Billys-style pan pizza. Frozen disc, molten cheese after a short heat.",
+    priceKr: 46,
     image: "/foods/pizza.jpg",
-    heatMinutes: 2,
-    tags: ["value"],
+    heatMinutes: 3,
+    tags: [],
   },
   {
-    id: "butter-chicken",
-    name: "Butter chicken + rice",
+    id: "pancakes",
+    name: "Pannkakor",
     description:
-      "Creamy tomato-butter chicken over basmati. The closest thing here to a real lunch.",
-    priceCents: 700,
-    image: "/foods/butter-chicken.jpg",
+      "ICA frozen pannkakor. Swedish pancakes from the freezer aisle, served stacked and hot.",
+    priceKr: 45,
+    image: "/foods/pancakes.jpg",
+    heatMinutes: 2,
+    tags: ["veg"],
+  },
+  {
+    id: "chicken-wok",
+    name: "Kycklingwok",
+    description:
+      "ICA chicken wok with peppers. A Convini cabinet regular, reheated until the sauce shines.",
+    priceKr: 57,
+    image: "/foods/stroganoff.jpg",
     heatMinutes: 4,
     tags: [],
   },
   {
-    id: "noodles",
-    name: "Garlic sesame noodles",
+    id: "curry",
+    name: "Röd curry",
     description:
-      "Chewy wheat noodles with garlic oil, sesame, and scallion. Vegetarian, still filling.",
-    priceCents: 550,
+      "ICA red curry with chicken. Thai-style frozen tray — spicy, coconut, office-lunch staple.",
+    priceKr: 55,
+    image: "/foods/chili.jpg",
+    heatMinutes: 4,
+    tags: ["spicy"],
+  },
+  {
+    id: "fried-rice",
+    name: "Stekt ris",
+    description:
+      "ICA fried rice with chicken and vegetables. Straight from the freezer, fluffed in the microwave.",
+    priceKr: 50,
+    image: "/foods/rice-bowl.jpg",
+    heatMinutes: 4,
+    tags: [],
+  },
+  {
+    id: "pork-noodles",
+    name: "Nudlar med fläsk",
+    description:
+      "Convini-style pork noodles. Frozen Asian tray that plates like a fresh bowl once heated.",
+    priceKr: 56,
     image: "/foods/noodles.jpg",
-    heatMinutes: 3,
+    heatMinutes: 4,
+    tags: [],
+  },
+  {
+    id: "veg-pasta",
+    name: "Vegetarisk pasta",
+    description:
+      "ICA vegetarian pasta in tomato sauce. No meat, still a proper microwave lunch.",
+    priceKr: 47,
+    image: "/foods/veg-lasagne.jpg",
+    heatMinutes: 4,
     tags: ["veg"],
   },
   {
-    id: "chili",
-    name: "Three-bean chili",
+    id: "samosas",
+    name: "Samosas",
     description:
-      "Kidney, black, and pinto beans in a smoky tomato chili. No meat, plenty of heat.",
-    priceCents: 450,
-    image: "/foods/chili.jpg",
+      "ICA frozen vegetable samosas. Crisp after heating — the snack tray from the freezer aisle.",
+    priceKr: 45,
+    image: "/foods/falafel.jpg",
     heatMinutes: 3,
-    tags: ["veg", "spicy", "value"],
+    tags: ["veg", "spicy"],
   },
   {
-    id: "rice-bowl",
-    name: "Teriyaki chicken rice",
+    id: "beef-pasta",
+    name: "Pasta med biff",
     description:
-      "Chicken and vegetables over steamed rice with teriyaki glaze. The office bowl.",
-    priceCents: 650,
-    image: "/foods/rice-bowl.jpg",
-    heatMinutes: 4,
+      "ICA creamy beef pasta. Frozen tagliatelle with steak pieces, served looking freshly tossed.",
+    priceKr: 58,
+    image: "/foods/pasta2.jpg",
+    heatMinutes: 5,
     tags: [],
   },
 ];
@@ -117,6 +157,6 @@ export function getMenuItem(id: string) {
   return MENU.find((item) => item.id === id);
 }
 
-export function formatPrice(cents: number) {
-  return `$${(cents / 100).toFixed(2)}`;
+export function formatPrice(kr: number) {
+  return `${kr} kr`;
 }

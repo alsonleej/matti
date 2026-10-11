@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local order store
 /data/orders.json
+
+# local test artifacts
+/test-results

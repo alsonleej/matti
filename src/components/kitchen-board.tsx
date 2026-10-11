@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
-import { formatReadyBy } from "@/lib/slots";
+import { PEOPLE } from "@/data/people";
+import { formatReadyBy } from "@/lib/time";
 import type { Order, OrderStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,14 +27,14 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   picked_up: "Picked up",
 };
 
-function nextStatus(status: OrderStatus): OrderStatus | null {
+function nextStatus(status: Order["status"]): OrderStatus | null {
   if (status === "queued") return "heating";
   if (status === "heating") return "ready";
   if (status === "ready") return "picked_up";
   return null;
 }
 
-function nextLabel(status: OrderStatus) {
+function nextLabel(status: Order["status"]) {
   if (status === "queued") return "Start heating";
   if (status === "heating") return "Mark ready";
   if (status === "ready") return "Picked up";
@@ -74,10 +75,19 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
     return () => window.clearInterval(timer);
   }, [load]);
 
+  const heatOrders = useMemo(
+    () => orders.filter((order) => order.kind === "heat"),
+    [orders],
+  );
+  const stockRequests = useMemo(
+    () => orders.filter((order) => order.kind === "stock"),
+    [orders],
+  );
+
   const visible = useMemo(() => {
-    if (filter === "all") return orders;
-    return orders.filter((order) => order.status === filter);
-  }, [filter, orders]);
+    if (filter === "all") return heatOrders;
+    return heatOrders.filter((order) => order.status === filter);
+  }, [filter, heatOrders]);
 
   const grouped = useMemo(() => {
     const groups = new Map<string, Order[]>();
@@ -91,21 +101,21 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
   }, [visible]);
 
   const stats = useMemo(() => {
-    const list = orders;
-    const active = list.filter((order) => order.status !== "picked_up");
-    const people = new Set(list.map((order) => order.name.toLowerCase()));
+    const active = heatOrders.filter((order) => order.status !== "picked_up");
+    const people = new Set(orders.map((order) => order.name.toLowerCase()));
     const counts = new Map<string, number>();
-    for (const order of list) {
+    for (const order of orders) {
       counts.set(order.itemName, (counts.get(order.itemName) ?? 0) + order.quantity);
     }
     const popular = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
     return {
-      total: list.length,
+      total: heatOrders.length,
       active: active.length,
+      requests: stockRequests.length,
       people: people.size,
       popular: popular ? `${popular[0]} (${popular[1]})` : "—",
     };
-  }, [orders]);
+  }, [heatOrders, orders, stockRequests.length]);
 
   async function updateStatus(order: Order) {
     const status = nextStatus(order.status);
@@ -148,16 +158,17 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
           Heat what’s coming
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          When someone orders, microwave it and have it ready at their time.
-          This board is how we run the trial without a vending machine.
+          Microwave today’s orders for the ready-by time. Stock requests below
+          are demand for trays we don’t have in yet.
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Stat label="Orders in" value={String(stats.total)} />
-        <Stat label="Still to handle" value={String(stats.active)} />
+        <Stat label="Still to heat" value={String(stats.active)} />
+        <Stat label="Stock requests" value={String(stats.requests)} />
         <Stat label="Colleagues" value={String(stats.people)} />
-        <Stat label="Most ordered" value={stats.popular} />
+        <Stat label="Most wanted" value={stats.popular} />
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -188,10 +199,10 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
-          <p className="font-heading text-lg">No orders yet</p>
+          <p className="font-heading text-lg">No heat orders yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Share the menu with the office. Incoming orders show up here grouped
-            by ready-by time.
+            Send /alson, /harshita, /joel, or /yixuan. Incoming orders show up
+            grouped by ready-by time.
           </p>
         </div>
       ) : (
@@ -202,47 +213,16 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
               <div className="grid gap-3">
                 {group.map((order) => {
                   const action = nextLabel(order.status);
+                  const menuName = PEOPLE[order.personId]?.name ?? order.personId;
                   return (
-                    <Card key={order.id} className="sm:flex-row sm:items-center">
-                      <CardHeader className="sm:flex-row sm:items-center sm:gap-4">
-                        <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
-                          <Image
-                            src={order.itemImage}
-                            alt={order.itemName}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <CardTitle>{order.itemName}</CardTitle>
-                            <Badge variant="secondary">
-                              {STATUS_LABEL[order.status]}
-                            </Badge>
-                          </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {order.quantity} × for {order.name} · {order.desk} ·{" "}
-                            {formatPrice(order.priceCents)} · {order.id}
-                          </p>
-                          {order.notes ? (
-                            <p className="mt-1 text-sm">Note: {order.notes}</p>
-                          ) : null}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="sm:ml-auto sm:w-auto">
-                        {action ? (
-                          <Button
-                            className="w-full sm:w-auto"
-                            disabled={updatingId === order.id}
-                            onClick={() => void updateStatus(order)}
-                          >
-                            {action}
-                          </Button>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Done</p>
-                        )}
-                      </CardContent>
-                    </Card>
+                    <OrderRow
+                      key={order.id}
+                      order={order}
+                      menuName={menuName}
+                      action={action}
+                      updating={updatingId === order.id}
+                      onAction={() => void updateStatus(order)}
+                    />
                   );
                 })}
               </div>
@@ -250,7 +230,92 @@ export function KitchenBoard({ initialOrders }: { initialOrders: Order[] }) {
           ))}
         </div>
       )}
+
+      <section className="grid gap-3 border-t pt-8">
+        <h2 className="font-heading text-2xl">Request to stock</h2>
+        {stockRequests.length === 0 ? (
+          <div className="rounded-2xl border border-dashed bg-card px-6 py-12 text-center">
+            <p className="text-sm text-muted-foreground">
+              No stock requests yet. These are trays people want us to buy next.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-3">
+            {stockRequests.map((order) => {
+              const menuName = PEOPLE[order.personId]?.name ?? order.personId;
+              return (
+                <OrderRow
+                  key={order.id}
+                  order={order}
+                  menuName={menuName}
+                  action={null}
+                  updating={false}
+                />
+              );
+            })}
+          </div>
+        )}
+      </section>
     </div>
+  );
+}
+
+function OrderRow({
+  order,
+  menuName,
+  action,
+  updating,
+  onAction,
+}: {
+  order: Order;
+  menuName: string;
+  action: string | null;
+  updating: boolean;
+  onAction?: () => void;
+}) {
+  const statusText =
+    order.kind === "stock"
+      ? "Requested"
+      : STATUS_LABEL[order.status as OrderStatus];
+
+  return (
+    <Card className="sm:flex-row sm:items-center">
+      <CardHeader className="sm:flex-row sm:items-center sm:gap-4">
+        <div className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-muted">
+          <Image
+            src={order.itemImage}
+            alt={order.itemName}
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <CardTitle>{order.itemName}</CardTitle>
+            <Badge variant="secondary">{statusText}</Badge>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {order.quantity} × for {order.name} · {order.desk} · {menuName} ·{" "}
+            {formatPrice(order.priceKr)} · {order.id}
+          </p>
+        </div>
+      </CardHeader>
+      <CardContent className="sm:ml-auto sm:w-auto">
+        {action && onAction ? (
+          <Button
+            className="w-full sm:w-auto"
+            disabled={updating}
+            onClick={onAction}
+          >
+            {action}
+          </Button>
+        ) : order.kind === "stock" ? (
+          <p className="text-sm text-muted-foreground">Interest</p>
+        ) : (
+          <p className="text-sm text-muted-foreground">Done</p>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

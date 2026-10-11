@@ -20,20 +20,28 @@ export default async function OrderConfirmationPage({
     notFound();
   }
 
+  const isHeat = order.kind === "heat";
+  const menuHref = `/${order.personId}`;
+
   return (
     <div className="flex min-h-full flex-col">
-      <SiteHeader />
+      <SiteHeader personId={order.personId} />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center px-4 py-12 sm:px-6">
         <div className="mb-6 flex items-center gap-2 text-primary">
           <CheckCircle2 className="size-5" />
-          <p className="text-sm font-medium">Order received</p>
+          <p className="text-sm font-medium">
+            {isHeat ? "Order received" : "Stock request received"}
+          </p>
         </div>
         <h1 className="font-heading text-3xl tracking-tight sm:text-4xl">
-          We’ll have it hot by {order.readyByLabel}.
+          {isHeat
+            ? `We’ll have it hot by ${order.readyByLabel}.`
+            : "We’ll count this toward the next cabinet."}
         </h1>
         <p className="mt-3 text-muted-foreground">
-          {order.name}, this is your interest-check order. Someone on kitchen
-          duty will microwave it by hand — no vending machine, just the test.
+          {isHeat
+            ? `${order.name}, this is a Mätti trial order. Someone will microwave the ICA / Convini tray by hand.`
+            : `${order.name}, this tray isn’t in today. If enough people request it, we’ll stock it.`}
         </p>
 
         <Card className="mt-8 pt-0">
@@ -55,34 +63,31 @@ export default async function OrderConfirmationPage({
                 </p>
               </div>
               <p className="font-heading text-xl">
-                {formatPrice(order.priceCents)}
+                {formatPrice(order.priceKr)}
               </p>
             </div>
             <ul className="grid gap-2 text-sm">
-              <li className="flex items-center gap-2">
-                <Clock className="size-4 text-primary" />
-                Ready by {order.readyByLabel}
-              </li>
+              {isHeat ? (
+                <li className="flex items-center gap-2">
+                  <Clock className="size-4 text-primary" />
+                  Ready by {order.readyByLabel}
+                </li>
+              ) : null}
               <li className="flex items-center gap-2">
                 <MapPin className="size-4 text-primary" />
-                Pickup for {order.desk}
+                {order.desk}
               </li>
               <li className="flex items-center gap-2">
                 <Microwave className="size-4 text-primary" />
-                Pay at pickup · cash or office Venmo
+                {isHeat ? "Pay with Swish at pickup" : "No charge until we stock it"}
               </li>
             </ul>
-            {order.notes ? (
-              <p className="rounded-lg bg-muted px-3 py-2 text-sm">
-                Kitchen note: {order.notes}
-              </p>
-            ) : null}
           </CardContent>
         </Card>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button className="flex-1" render={<Link href="/" />}>
-            Order something else
+          <Button className="flex-1" render={<Link href={menuHref} />}>
+            Back to the menu
           </Button>
           <Button
             className="flex-1"

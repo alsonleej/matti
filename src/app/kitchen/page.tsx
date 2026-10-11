@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header";
 import { listOrders } from "@/lib/orders-store";
 
 export const metadata: Metadata = {
-  title: "Kitchen · Heat Check",
+  title: "Kitchen · Mätti",
   description: "Incoming microwave orders grouped by ready-by time.",
 };
 

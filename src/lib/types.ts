@@ -1,3 +1,5 @@
+import type { PersonId } from "@/data/people";
+
 export const ORDER_STATUSES = [
   "queued",
   "heating",
@@ -7,28 +9,32 @@ export const ORDER_STATUSES = [
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+export type OrderKind = "heat" | "stock";
+
 export type Order = {
   id: string;
+  kind: OrderKind;
+  personId: PersonId;
   itemId: string;
   itemName: string;
   itemImage: string;
-  priceCents: number;
+  priceKr: number;
   quantity: number;
   name: string;
   desk: string;
   readyBy: string;
   readyByLabel: string;
-  notes: string;
-  status: OrderStatus;
+  status: OrderStatus | "requested";
   createdAt: string;
 };
 
 export type PlaceOrderInput = {
+  kind: OrderKind;
+  personId: string;
   itemId: string;
   quantity: number;
   name: string;
   desk: string;
-  readyBy: string;
-  readyByLabel: string;
-  notes: string;
+  readyBy?: string;
+  readyByLabel?: string;
 };

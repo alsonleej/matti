@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { getMenuItem } from "@/data/menu";
+import { getPerson, personHasItem } from "@/data/people";
 import type { Order, OrderStatus, PlaceOrderInput } from "@/lib/types";
 import { ORDER_STATUSES } from "@/lib/types";
 
@@ -35,14 +36,17 @@ async function writeOrdersToDisk(orders: Order[]) {
 
 function makeOrderId() {
   const nibble = crypto.randomUUID().replace(/-/g, "").slice(0, 4).toUpperCase();
-  return `HC-${nibble}`;
+  return `MT-${nibble}`;
 }
 
 export async function listOrders() {
   const orders = await readOrdersFromDisk();
-  return [...orders].sort(
-    (a, b) => new Date(a.readyBy).getTime() - new Date(b.readyBy).getTime(),
-  );
+  return [...orders].sort((a, b) => {
+    if (a.kind !== b.kind) return a.kind === "heat" ? -1 : 1;
+    const aTime = a.kind === "heat" ? a.readyBy : a.createdAt;
+    const bTime = b.kind === "heat" ? b.readyBy : b.createdAt;
+    return new Date(aTime).getTime() - new Date(bTime).getTime();
+  });
 }
 
 export async function getOrder(id: string) {
@@ -51,38 +55,55 @@ export async function getOrder(id: string) {
 }
 
 export async function createOrder(input: PlaceOrderInput) {
+  const person = getPerson(input.personId);
+  if (!person) {
+    throw new Error("Unknown menu.");
+  }
+
+  const kind = input.kind === "stock" ? "stock" : "heat";
   const item = getMenuItem(input.itemId);
   if (!item) {
     throw new Error("That item is not on the menu.");
+  }
+  if (!personHasItem(person, item.id, kind)) {
+    throw new Error("That item is not on this menu.");
   }
 
   const name = input.name.trim();
   const desk = input.desk.trim();
   if (!name) throw new Error("Add your name so we know who to call.");
   if (!desk) throw new Error("Add a desk, floor, or Slack handle.");
-  if (!input.readyBy || !input.readyByLabel) {
-    throw new Error("Pick a ready-by time.");
-  }
 
   const quantity = Math.min(3, Math.max(1, Math.round(input.quantity)));
-  const readyAt = new Date(input.readyBy);
-  if (Number.isNaN(readyAt.getTime())) {
-    throw new Error("That ready-by time is not valid.");
+
+  let readyBy = "";
+  let readyByLabel = "";
+  if (kind === "heat") {
+    if (!input.readyBy || !input.readyByLabel) {
+      throw new Error("Pick a ready-by time.");
+    }
+    const readyAt = new Date(input.readyBy);
+    if (Number.isNaN(readyAt.getTime())) {
+      throw new Error("That ready-by time is not valid.");
+    }
+    readyBy = readyAt.toISOString();
+    readyByLabel = input.readyByLabel.trim();
   }
 
   const order: Order = {
     id: makeOrderId(),
+    kind,
+    personId: person.id,
     itemId: item.id,
     itemName: item.name,
     itemImage: item.image,
-    priceCents: item.priceCents * quantity,
+    priceKr: item.priceKr * quantity,
     quantity,
     name,
     desk,
-    readyBy: readyAt.toISOString(),
-    readyByLabel: input.readyByLabel.trim(),
-    notes: input.notes.trim().slice(0, 280),
-    status: "queued",
+    readyBy,
+    readyByLabel,
+    status: kind === "heat" ? "queued" : "requested",
     createdAt: new Date().toISOString(),
   };
 
@@ -103,6 +124,9 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
     const orders = await readOrdersFromDisk();
     const index = orders.findIndex((order) => order.id === id);
     if (index === -1) return null;
+    if (orders[index].kind !== "heat") {
+      throw new Error("Stock requests don’t move through the microwave queue.");
+    }
 
     const updated = { ...orders[index], status };
     orders[index] = updated;

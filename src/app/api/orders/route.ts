@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createOrder, listOrders } from "@/lib/orders-store";
+import type { OrderKind } from "@/lib/types";
 
 export async function GET() {
   const orders = await listOrders();
@@ -9,23 +10,25 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
+      kind?: OrderKind;
+      personId?: string;
       itemId?: string;
       quantity?: number;
       name?: string;
       desk?: string;
       readyBy?: string;
       readyByLabel?: string;
-      notes?: string;
     };
 
     const order = await createOrder({
+      kind: body.kind === "stock" ? "stock" : "heat",
+      personId: body.personId ?? "",
       itemId: body.itemId ?? "",
       quantity: Number(body.quantity ?? 1),
       name: body.name ?? "",
       desk: body.desk ?? "",
-      readyBy: body.readyBy ?? "",
-      readyByLabel: body.readyByLabel ?? "",
-      notes: body.notes ?? "",
+      readyBy: body.readyBy,
+      readyByLabel: body.readyByLabel,
     });
 
     return NextResponse.json({ order }, { status: 201 });

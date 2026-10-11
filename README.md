@@ -1,8 +1,6 @@
-# Heat Check
+# Mätti
 
-A small office web app for testing whether people would use a heat-up vending machine. Colleagues browse microwaveable meals, pick a ready-by time, and submit an order. Whoever is on kitchen duty heats the food by hand and has it ready at that time.
-
-No payments, accounts, or vending hardware. Orders are stored in a local JSON file on the server.
+Office interest check for a heat-up vending machine. Colleagues order ICA / Convini frozen meals (45–60 kr) from a personal menu. We microwave what’s available today, and they can request trays to stock next.
 
 ## Run it
 
@@ -13,15 +11,21 @@ npm run dev
 
 Open [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
-- **Menu** (`/`) — share this link with the office
-- **Kitchen** (`/kitchen`) — incoming orders grouped by ready-by time
+Personal menus (send these individually):
 
-## How an order works
+- [/alson](http://127.0.0.1:43127/alson)
+- [/harshita](http://127.0.0.1:43127/harshita)
+- [/joel](http://127.0.0.1:43127/joel)
+- [/yixuan](http://127.0.0.1:43127/yixuan)
 
-1. Pick a meal (photo + price).
-2. Enter your name, desk/Slack, and a pickup window at least 15 minutes out.
-3. Submit. Pay at pickup.
-4. Kitchen marks the order heating → ready → picked up.
+Kitchen board: [/kitchen](http://127.0.0.1:43127/kitchen)
+
+## How it works
+
+1. Open your link. **Available today** is above; **Request to stock** is below.
+2. Order a tray and type a ready-by time (or nudge ±15 min).
+3. Pay with Swish at pickup. We heat it by hand.
+4. Kitchen marks orders heating → ready → picked up, and sees stock requests as demand.
 
 ## Stack
 
