@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Loader2, Minus, Plus } from "lucide-react";
 import { formatPrice, type MenuItem } from "@/data/menu";
-import { getOrderName, type PersonMenu } from "@/data/people";
+import type { PersonMenu } from "@/data/people";
 import { asset } from "@/lib/asset";
 import { placeOrder } from "@/lib/orders-client";
 import { defaultReadyAt, formatReadyLabel } from "@/lib/time";
@@ -54,7 +54,7 @@ function OrderForm({
   person: PersonMenu;
 }) {
   const router = useRouter();
-  const [name, setName] = useState(getOrderName(person));
+  const [name, setName] = useState(person.name);
   const [desk, setDesk] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [readyAt, setReadyAt] = useState(() => defaultReadyAt());

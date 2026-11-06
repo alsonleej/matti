@@ -17,9 +17,9 @@ Personal menus (send these individually):
 - [/standab](http://127.0.0.1:43127/standab)
 - [/bmb](http://127.0.0.1:43127/bmb)
 - [/chinsay](http://127.0.0.1:43127/chinsay)
-- [/sigrid](http://127.0.0.1:43127/sigrid) (Prisha)
-- [/cellfion](http://127.0.0.1:43127/cellfion) (Nadia)
-- [/ophelia](http://127.0.0.1:43127/ophelia) (Coeli)
+- [/sigrid](http://127.0.0.1:43127/sigrid)
+- [/cellfion](http://127.0.0.1:43127/cellfion)
+- [/ophelia](http://127.0.0.1:43127/ophelia)
 
 Kitchen board: [/kitchen](http://127.0.0.1:43127/kitchen)
 
@@ -36,7 +36,7 @@ The site is a static export (`out/`), so it runs on GitHub Pages with no server.
 
 1. Create a GitHub repo named **`matti`** and push this code to its `main` branch.
 2. In the repo, go to **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**.
-3. The workflow in `.github/workflows/pages.yml` builds with `NEXT_PUBLIC_BASE_PATH=/matti` and deploys. The site is at `https://<your-username>.github.io/matti/`, and the menus are at `/matti/kisi/`, `/matti/standab/`, `/matti/bmb/`, `/matti/chinsay/`, `/matti/sigrid/` (Prisha), `/matti/cellfion/` (Nadia), and `/matti/ophelia/` (Coeli).
+3. The workflow in `.github/workflows/pages.yml` builds with `NEXT_PUBLIC_BASE_PATH=/matti` and deploys. The site is at `https://<your-username>.github.io/matti/`, and the menus are at `/matti/kisi/`, `/matti/standab/`, `/matti/bmb/`, `/matti/chinsay/`, `/matti/sigrid/`, `/matti/cellfion/`, and `/matti/ophelia/`.
 
 Already have a `<your-username>.github.io` repo instead? Run `NEXT_PUBLIC_BASE_PATH=/matti npm run build` and copy the contents of `out/` into a `matti/` folder in that repo.
 
