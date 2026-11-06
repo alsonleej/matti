@@ -4,13 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
-import { ADMINS, PEOPLE, menuPathsLabel } from "@/data/people";
+import { PEOPLE, menuPathsLabel } from "@/data/people";
 import { asset } from "@/lib/asset";
-import {
-  hasRemoteOrders,
-  listOrders,
-  updateOrderStatus,
-} from "@/lib/orders-client";
+import { listOrders, updateOrderStatus } from "@/lib/orders-client";
 import { formatReadyBy } from "@/lib/time";
 import type { Order, OrderStatus } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -150,16 +146,7 @@ export function KitchenBoard() {
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Microwave today’s orders for the ready-by time. Stock requests below
           are demand for trays we don’t have in yet.
-          {ADMINS.length > 0
-            ? ` Admins: ${ADMINS.map((admin) => `${admin.adminName} (${admin.name})`).join(", ")}.`
-            : null}
         </p>
-        {!hasRemoteOrders ? (
-          <p className="mt-3 max-w-2xl rounded-xl border border-dashed bg-card px-4 py-3 text-sm text-muted-foreground">
-            Orders are saved in this browser only. Connect a shared Google
-            Sheet (see README) to collect orders from everyone.
-          </p>
-        ) : null}
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
