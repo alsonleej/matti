@@ -1,12 +1,21 @@
 import { getMenuItem, type MenuItem } from "@/data/menu";
 
-export const PERSON_IDS = ["kisi", "standab", "bmb", "chinsay"] as const;
+export const PERSON_IDS = [
+  "kisi",
+  "standab",
+  "bmb",
+  "chinsay",
+  "sigrid",
+  "cellfion",
+  "ophelia",
+] as const;
 
 export type PersonId = (typeof PERSON_IDS)[number];
 
 export type PersonMenu = {
   id: PersonId;
   name: string;
+  adminName?: string;
   availableIds: string[];
   requestIds: string[];
 };
@@ -36,7 +45,33 @@ export const PEOPLE: Record<PersonId, PersonMenu> = {
     availableIds: ["salmon", "chicken-wok", "bolognese", "fried-rice"],
     requestIds: ["meatballs", "lasagne", "samosas", "tikka"],
   },
+  sigrid: {
+    id: "sigrid",
+    name: "Sigrid",
+    adminName: "Prisha",
+    availableIds: ["red-curry-chicken", "pancakes", "pork-noodles", "veg-pasta"],
+    requestIds: ["pizza", "meatballs", "salmon", "fried-rice"],
+  },
+  cellfion: {
+    id: "cellfion",
+    name: "Cellfion",
+    adminName: "Nadia",
+    availableIds: ["curry", "salmon", "pancakes", "samosas"],
+    requestIds: ["pizza", "beef-pasta", "lasagne", "chicken-wok"],
+  },
+  ophelia: {
+    id: "ophelia",
+    name: "Ophelia",
+    adminName: "Coeli",
+    availableIds: ["red-curry-chicken", "tikka", "veg-pasta", "pork-noodles"],
+    requestIds: ["pizza", "meatballs", "bolognese", "pancakes"],
+  },
 };
+
+export const ADMINS = PERSON_IDS.map((id) => PEOPLE[id]).filter(
+  (person): person is PersonMenu & { adminName: string } =>
+    Boolean(person.adminName),
+);
 
 export function isPersonId(value: string): value is PersonId {
   return PERSON_IDS.includes(value as PersonId);
@@ -45,6 +80,16 @@ export function isPersonId(value: string): value is PersonId {
 export function getPerson(id: string): PersonMenu | null {
   if (!isPersonId(id)) return null;
   return PEOPLE[id];
+}
+
+export function getOrderName(person: PersonMenu) {
+  return person.adminName ?? person.name;
+}
+
+export function menuPathsLabel() {
+  return new Intl.ListFormat("en", { type: "disjunction" }).format(
+    PERSON_IDS.map((id) => `/${id}`),
+  );
 }
 
 function itemsFromIds(ids: string[]): MenuItem[] {

@@ -34,9 +34,18 @@ export default function Home() {
                   nativeButton={false}
                   render={<Link href={`/${id}`} />}
                 >
-                  <span className="font-heading text-lg">{person.name}</span>
+                  <span className="flex w-full items-center justify-between gap-2">
+                    <span className="font-heading text-lg">{person.name}</span>
+                    {person.adminName ? (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                        Admin
+                      </span>
+                    ) : null}
+                  </span>
                   <span className="text-sm font-normal text-muted-foreground">
-                    /{id}
+                    {person.adminName
+                      ? `${person.adminName} · /${id}`
+                      : `/${id}`}
                   </span>
                 </Button>
               </li>
