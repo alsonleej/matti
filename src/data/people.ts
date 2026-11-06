@@ -7,7 +7,7 @@ export const PERSON_IDS = [
   "chinsay",
   "sigrid",
   "cellfion",
-  "ophelia",
+  "coeli",
 ] as const;
 
 export type PersonId = (typeof PERSON_IDS)[number];
@@ -56,9 +56,9 @@ export const PEOPLE: Record<PersonId, PersonMenu> = {
     availableIds: ["curry", "salmon", "pancakes", "samosas"],
     requestIds: ["pizza", "beef-pasta", "lasagne", "chicken-wok"],
   },
-  ophelia: {
-    id: "ophelia",
-    name: "Ophelia",
+  coeli: {
+    id: "coeli",
+    name: "Coeli",
     availableIds: ["red-curry-chicken", "tikka", "veg-pasta", "pork-noodles"],
     requestIds: ["pizza", "meatballs", "bolognese", "pancakes"],
   },
