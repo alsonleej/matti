@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
-import { PEOPLE } from "@/data/people";
+import { ADMINS, PEOPLE, menuPathsLabel } from "@/data/people";
 import { asset } from "@/lib/asset";
 import {
   hasRemoteOrders,
@@ -150,6 +150,9 @@ export function KitchenBoard() {
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Microwave today’s orders for the ready-by time. Stock requests below
           are demand for trays we don’t have in yet.
+          {ADMINS.length > 0
+            ? ` Admins: ${ADMINS.map((admin) => `${admin.adminName} (${admin.name})`).join(", ")}.`
+            : null}
         </p>
         {!hasRemoteOrders ? (
           <p className="mt-3 max-w-2xl rounded-xl border border-dashed bg-card px-4 py-3 text-sm text-muted-foreground">
@@ -201,8 +204,8 @@ export function KitchenBoard() {
         <div className="rounded-2xl border border-dashed bg-card px-6 py-16 text-center">
           <p className="font-heading text-lg">No heat orders yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            Send /kisi, /standab, /bmb, or /chinsay. Incoming orders show up
-            grouped by ready-by time.
+            Send {menuPathsLabel()}. Incoming orders show up grouped by
+            ready-by time.
           </p>
         </div>
       ) : (
